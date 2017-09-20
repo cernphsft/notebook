@@ -14,8 +14,6 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV PYTHONIOENCODING UTF-8
 
-RUN yum -y install yum-plugin-ovl # See https://github.com/CentOS/sig-cloud-instance-images/issues/15
-
 # Install developer tools
 RUN yum -y update
 RUN yum -y install \
@@ -79,9 +77,9 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     rm get-pip.py
 
 RUN pip3 --no-cache-dir install \
-            'notebook==5.0.*' \
-            'jupyterhub==0.7.*' \
-            'jupyterlab==0.24.*' \
+            'notebook==5.0.0' \
+            'jupyterhub==0.7.2' \
+            'jupyterlab==0.24.1' \
             'jupyter_nbextensions_configurator'
 
 # Add a notebook profile
