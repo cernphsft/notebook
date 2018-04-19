@@ -15,40 +15,42 @@ ENV LC_ALL en_US.UTF-8
 ENV PYTHONIOENCODING UTF-8
 
 # Install developer tools
-RUN yum -y update
-RUN yum -y install \
-    bzip2 \
-    gcc \
-    gcc-c++ \
-    git \
-    kernel-devel \
-    libcurl-openssl-devel \
-    libffi-devel \
-    ncurses-devel \
-    nano \
-    nodejs \
-    npm \
-    pandoc \
-    patch \
-    sqlite-devel \
-    tar \
-    texlive-latex \
-    texlive-texmf-fonts \
-    unzip \
-    wget \
-    which \
-    zeromq3-devel \
-    zlib-devel && yum clean all
+RUN yum -y update && \
+    yum -y install \
+        bzip2 \
+        gcc \
+        gcc-c++ \
+        git \
+        kernel-devel \
+        libcurl-openssl-devel \
+        libffi-devel \
+        ncurses-devel \
+        nano \
+        nodejs \
+        npm \
+        pandoc \
+        patch \
+        sqlite-devel \
+        tar \
+        texlive-latex \
+        texlive-texmf-fonts \
+        unzip \
+        wget \
+        which \
+        zeromq3-devel \
+        zlib-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum
 
 # Install Latex packages (missing in SLC6, needed to convert notebooks to PDF)
 WORKDIR /usr/share/texmf
 RUN wget http://mirrors.ctan.org/install/macros/latex/contrib/adjustbox.tds.zip && \
     unzip -d . adjustbox.tds.zip && \ 
-    rm adjustbox.tds.zip
-RUN wget http://mirrors.ctan.org/install/macros/latex/contrib/collectbox.tds.zip && \
+    rm adjustbox.tds.zip && \
+    wget http://mirrors.ctan.org/install/macros/latex/contrib/collectbox.tds.zip && \
     unzip -d . collectbox.tds.zip && \
-    rm collectbox.tds.zip
-RUN mktexlsr
+    rm collectbox.tds.zip && \
+    mktexlsr
 
 # Install Tini
 RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini && \
@@ -57,16 +59,14 @@ RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini 
     chmod +x /usr/local/bin/tini
 
 # Install Python 3
-RUN mkdir /tmp/pytmp
-WORKDIR /tmp/pytmp
-RUN wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz && \
-    tar xzvf Python-3.6.1.tgz
-WORKDIR /tmp/pytmp/Python-3.6.1
-RUN ./configure --enable-shared && \
-    make install
-
-# Cleanup
-RUN rm -rf /tmp/pytmp
+RUN mkdir /tmp/pytmp && \
+    cd /tmp/pytmp && \
+    wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz && \
+    tar xzvf Python-3.6.1.tgz && \
+    cd /tmp/pytmp/Python-3.6.1 && \
+    ./configure --enable-shared && \
+    make install && \
+    rm -rf /tmp/pytmp
 
 # Set up the LD_LIBRARY_PATH for Pip3 and Python3 to work
 ENV LD_LIBRARY_PATH /usr/local/lib/
